@@ -30,8 +30,6 @@ pq = find(type == 3);               % PQ Buses..
 npv = length(pv);                   % No. of PV buses..
 npq = length(pq);                   % No. of PQ buses..
 
-PGain = 1;
-
 Tol = 1;  
 Iter = 1;
 while (Tol > 1e-5)   % Iteration starting..
@@ -44,6 +42,20 @@ while (Tol > 1e-5)   % Iteration starting..
             P(i) = P(i) + V(i)* V(k)*(G(i,k)*cos(del(i)-del(k)) + B(i,k)*sin(del(i)-del(k)));
             Q(i) = Q(i) + V(i)* V(k)*(G(i,k)*sin(del(i)-del(k)) - B(i,k)*cos(del(i)-del(k)));
         end
+    end
+
+    % Checking Q-limit violations..
+    if Iter <= 7 && Iter > 2    % Only checked up to 7th iterations..
+        for n = 2:nbus
+            if type(n) == 2
+                QG = Q(n)+Ql(n);
+                if QG < Qmin(n)
+                    V(n) = V(n) + 0.01;
+                elseif QG > Qmax(n)
+                    V(n) = V(n) - 0.01;
+                end
+            end
+         end
     end
     
     % Calculate change from specified value
@@ -58,7 +70,7 @@ while (Tol > 1e-5)   % Iteration starting..
         end
     end
     dP = dPa(2:nbus);
-    M = [PGain*dP; dQ];           % Mismatch Vector
+    M = [dP; dQ];       % Mismatch Vector
     
     % Jacobian
     % J1 - Derivative of Real Power Injections with Angles..
@@ -131,37 +143,7 @@ while (Tol > 1e-5)   % Iteration starting..
     
     J = [J1 J2; J3 J4];     % Jacobian Matrix..
     
-    %     % only use J1 and J4. not work. 
-    %     Iterflag = 1;
-    %     while (Iterflag)
-    %         Lambda = eig(J);
-    %         LambdaAbsMin = min(abs(Lambda));
-    %         LambdaRealMin = min(real(Lambda));
-    %         if LambdaRealMin > 0
-    %             Iterflag = 0;
-    %         elseif Iterflag == 1
-    %             disp([LambdaRealMin Iter Iterflag]);
-    %             J = blkdiag(J1,J4);
-    %             Iterflag = 2;
-    %             continue;
-    %         elseif Iterflag == 2
-    %             disp([LambdaRealMin Iter Iterflag]);
-    %             break;
-    %         end
-    %     end
-
-    % normalise the Jacobian
-    Lambda = eig(J);
-    LambdaAbsMin = min(abs(Lambda));
-    LambdaRealMin = min(real(Lambda));
-    if LambdaRealMin < 0
-        disp(['min(real(eig)) = ' num2str(LambdaRealMin) ', interation = ' num2str(Iter)]);
-    end
-    
-    Scale = 1/LambdaAbsMin;
-    J = Scale*J;
-    
-    X = (J^(-1))*M;           % Correction Vector
+    X = inv(J)*M;           % Correction Vector
     dTh = X(1:nbus-1);      % Change in Voltage Angle..
     dV = X(nbus:end);       % Change in Voltage Magnitude..
     

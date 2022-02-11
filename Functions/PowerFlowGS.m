@@ -4,7 +4,7 @@
 
 function [PowerFlow,Ybus,V,I,Ang0,P,Q,Vm]=PowerFlowGS(ListBus,ListLine,w0)
 
-Ybus = SimplexPS.PowerFlow.YbusCalc(ListLine);      % Get nodal admittance matrix
+Ybus = YbusCalc(ListLine);      % Get nodal admittance matrix
 
 ListNumber = ListBus(:,1);      % Bus number
 N_Bus = max(ListNumber);        % Total number of buses
@@ -35,15 +35,14 @@ Qmax = ListBus(:,10);       % Maximum Reactive Power Limit
 P = PGi - PLi;  	% Net actove power at buses.
 Q = QGi - QLi;      % Net reactive power at buses.
 
-V = SimplexPS.pol2rect(V0,th0);    	% Convert voltages from polar form to rectangular form
+V = pol2rect(V0,th0);    	% Convert voltages from polar form to rectangular form
 % V = V0;
 Vprev = V;
 
 tolerance = 1;           	% Initialize tolerence
 iteration = 0;              % Initialize interaction count
 
-tolerance_max  = 1e-6;
-% tolerance_max = 0.25;
+tolerance_max  = 1e-8;
 iteration_max  = 1e5;
 
 while ((tolerance>tolerance_max) && (iteration<=iteration_max))
@@ -74,31 +73,13 @@ while ((tolerance>tolerance_max) && (iteration<=iteration_max))
                                                                         % Equation (6.90) in Kundur's book
             
             if ListType(i) == 2 
-                V(i) = SimplexPS.pol2rect(abs(Vprev(i)), angle(V(i)));  % For PV bus, voltage magnitude remains same, but angle changes.
+                V(i) = pol2rect(abs(Vprev(i)), angle(V(i)));  % For PV bus, voltage magnitude remains same, but angle changes.
             end
         
         end
     end
     
-    if iteration == 0
-        Counter100 = 0;
-    end
-    
     iteration = iteration + 1;         	% Increment iteration count.
-    Counter100 = Counter100 + 1;
-    
-%   	if Counter100 == 20  	% Check the convergence of power flow.
-%         % error(['Error: The PowerFlow does not converge or needs more steps to converge!']);
-%         Counter100 = 0;
-%         if iteration >= 3219
-%             t1_Ang = Ang/pi*180;
-%             t2_tolerP = tolerP;
-%             t3_errorP = real(S(2:N)) - P(2:N);
-%             t1_Ang(42)
-%             t3_errorP(42)
-%         end
-%    end
-    
     if iteration == iteration_max  	% Check the convergence of power flow.
         error(['Error: The PowerFlow does not converge or needs more steps to converge!']);
     end
@@ -107,7 +88,6 @@ while ((tolerance>tolerance_max) && (iteration<=iteration_max))
     S = I.*conj(V);
     N = length(V);
     Ang = angle(V);
-    
     
     tolerV = max(abs(abs(V) - abs(Vprev)));     % Calculate V tolerance.
     tolerP = max(abs(real(S(2:N)) - P(2:N)));     % Calculate P tolerance, exclude the slack terminal

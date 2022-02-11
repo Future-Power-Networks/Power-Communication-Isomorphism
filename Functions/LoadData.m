@@ -21,13 +21,13 @@ Enable_PrintOutput       	= ListAdvance(9);
 Enable_Participation        = ListAdvance(10);
 
 % ### Re-arrange the bus netlist
-[ListBus,N_Bus] = SimplexPS.Toolbox.RearrangeListBus(UserData);
+[ListBus,N_Bus] = RearrangeListBus(UserData);
 
 % ### Re-arrange the line netlist
-[ListLine,N_Branch.N_Bus_] = SimplexPS.Toolbox.RearrangeListLine(UserData,ListBus);
+[ListLine,N_Branch.N_Bus_] = RearrangeListLine(UserData,ListBus);
 
 % ### Re-arrange the device netlist
-[DeviceBus,DeviceType,DevicePara,N_Device] = SimplexPS.Toolbox.RearrangeListDevice(UserData,Wbase,ListBus);
+[DeviceBus,DeviceType,DevicePara,N_Device] = RearrangeListDevice(UserData,Wbase,ListBus);
 
 % Notes:
 % The codes in this part are borrowed from the SimplexPS toolbox.

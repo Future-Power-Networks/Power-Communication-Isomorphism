@@ -13,7 +13,7 @@ Q(i) = PowerFlow{i}(2);
 Vm(i) = PowerFlow{i}(3);
 Ang(i) = PowerFlow{i}(4);
 
-V(i,1) = SimplexPS.pol2rect(Vm(i),Ang(i));
+V(i,1) = pol2rect(Vm(i),Ang(i));
 S(i) = P(i)+1i*Q(i);        % S in Load convention
 I(i,1) = conj(S(i)/V(i));   % I in load convention
 I(i,1) = -I(i,1);           % I in source convention

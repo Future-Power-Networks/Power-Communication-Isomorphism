@@ -1,6 +1,6 @@
 % ### Power flow analysis
 if Flag_PowerFlowAlgorithm == 1
-    [PowerFlow,~,~,~,~,~,~,~] = SimplexPS.PowerFlow.PowerFlowGS(ListBus,ListLine,Wbase);
+    [PowerFlow,~,~,~,~,~,~,~] = PowerFlowGS(ListBus,ListLine,Wbase);
     % [PowerFlow,~,~,~,~,~,~,~] = PowerFlowGS(ListBus,ListLine,Wbase);
     % This power flow algorithm is wrong but I do not find the weird part.                                      % ???
     % This power flow also does not match PowerFlowNR method.
@@ -10,11 +10,11 @@ end
 % Form of PowerFlow{i}: P, Q, V, xi, w
 
 % Move load flow (PLi and QLi) to bus admittance matrix
-[ListBus,ListLineNew,PowerFlowNew] = SimplexPS.PowerFlow.Load2SelfBranch(ListBus,ListLine,PowerFlow);
+[ListBus,ListLineNew,PowerFlowNew] = Load2SelfBranch(ListBus,ListLine,PowerFlow);
 
 % For printting later
-ListPowerFlow = SimplexPS.PowerFlow.Rearrange(PowerFlow);
-ListPowerFlowNew = SimplexPS.PowerFlow.Rearrange(PowerFlowNew);
+ListPowerFlow = Rearrange(PowerFlow);
+ListPowerFlowNew = Rearrange(PowerFlowNew);
 
 % Update V and I
 [V,I] = PowerFlowUpdateVI(PowerFlowNew);
