@@ -20,7 +20,7 @@ Enable_SaveFigure = 1;
 %% Plot
 figure(1)
 
-LineWidth = 1.5;
+LineWidth = 0.8;
 NumPoint = 500;
 FigSize = [0.1 0.1 0.35 0.55];
 

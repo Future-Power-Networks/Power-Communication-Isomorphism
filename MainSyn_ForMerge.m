@@ -76,14 +76,12 @@ Enable_VoltageNode_InnerLoop    = 1;    % 1/0: star-delta conversion for flux in
 Enable_CurrentNode_InnerLoop    = 1;    % 1/0: inner-current loop impedance of current node                             ???
 
 Enable_vq_PLL                   = 1;    % 1/0: change Q-PLL to vq-PLL
-Enable_Change_Sign_PLL        	= 0;    % 1/0: change the sign of Q, epsilon_m = 90 or -90, for current node
 Enable_PLL_LPF                  = 1;    % 1/0: if the PLL with an additional 100Hz LPF
 w_tau                           = 2*pi*100;
 
 Select_Ibus_Ref              	= 2;
 
 % Enable plot
-Enable_Plot_Symbolic            = 0;  
 Enable_Plot_Eigenvalue          = 1;    % 1/0: Plot eigenvalues.
 Enable_Plot_GraphOrigin         = 1;    % 1/0: Plot the graph of the original power system
 Enable_Plot_GraphKH             = 0;    % 1/0: Plot the graph for KH
@@ -465,24 +463,6 @@ for i = 1:N_Bus
             theta_v = angle(V(i));
             epsilon(i) = pi/2 - (theta_i-theta_v);      % The Q direction is changed to vq direction.
         end
-        
-        if Enable_Change_Sign_PLL                                             
-            if real( I(i)*exp(-1i*angle(V(i))) )>0                                                     
-                epsilon(i) = -epsilon(i);
-            end
-            % Notes:
-            % For current node, conventional PLL uses vq rather than Q to
-            % achieve the synchronization. In load convention, Q = vq*id -
-            % vd*iq. If iq = 0, Q = vq*id if iq = 0. This means, the power
-            % flow id will influence the sign of Q, which also means the
-            % sign of loop gain also has to be changed to ensure the system
-            % stability. Here, we change the the value of epsilon_m
-            % depending on the power flow, to ensure xi>=0 and the
-            % stability. Noting that Q is in load convention, so, id should
-            % also be load convention. That means, when I>0 which means the
-            % IBR is generating active power, the sign of epsilon should be
-            % changed.
-        end
     else
         error(['Error']);
     end
@@ -664,7 +644,7 @@ KH = Hinv*K;
 [phi,xi,psi] = eig(KH);                 % phi is the right eigenvector matrix, psi is the left eigenvector matrix, xi is the eigenvalue matrix. Noting that phi^(-1) can also be regarded as a left eigenvector matrix.
 phi_inv = phi^(-1);
 xi_diag = diag(xi);
-xi_diag_Hz = vpa(xi_diag/2/pi,5)
+xi_diag_out = vpa(xi_diag,5)
 [xi_min,xi_min_index] = min( real(xi_diag) );
 fprintf(['KH stability: ']);
 if xi_min < -1e-5
@@ -708,7 +688,7 @@ if Enable_ParticipationTest
 end
 
 % Print xi
-xi_min_Hz = xi_min/2/pi
+xi_min_out = xi_min
 xi_min_index
 
 % Right eigenvector
@@ -866,11 +846,6 @@ end
 
 %% Plot
 fprintf('Plotting...\n')
-
-% Plot: symbolic
-if Enable_Plot_Symbolic
-PlotSymbolic();
-end
 
 % Plot: poles of state space system
 if Enable_Plot_Eigenvalue
