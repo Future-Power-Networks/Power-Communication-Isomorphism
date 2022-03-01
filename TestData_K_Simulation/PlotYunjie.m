@@ -7,7 +7,8 @@ close all
 % DataName = '0SG';
 % DataName = '2SG';
 % DataName = '3SG';
-DataName = 'SgLoad';
+% DataName = 'SgLoad';
+DataName = '0SG_Load_LongerFault';
 
 TimeShift = 2;
 Enable_SaveFigure = 1;
@@ -24,8 +25,8 @@ Fbus = [19,22,30,31,32,34,35,37,38,43,54,57,58,62,63,65,66];
 NumRef = 17;
 NumBus = 68;
 
-if strcmp(DataName,'0SG_Load') || strcmp(DataName,'SgLoad')
-    NumRef = 13;
+if strcmp(DataName,'0SG_Load') || strcmp(DataName,'SgLoad') || strcmp(DataName,'0SG_Load_LongerFault')
+    NumRef = 1;
     NumBus = 16;
 end
 
@@ -89,7 +90,7 @@ for i = 1:NumBus
             ylim([0,4]);      % 0SG
         elseif strcmp(DataName,'2SG')
             ylim([0,8]);        % 2SG
-        elseif strcmp(DataName,'3SG') || strcmp(DataName,'0SG_Load') || strcmp(DataName,'SgLoad')
+        elseif strcmp(DataName,'3SG') || strcmp(DataName,'0SG_Load') || strcmp(DataName,'SgLoad') || strcmp(DataName,'0SG_Load_LongerFault')
             ylim([0,1.5]);        % 3SG, 0SG_Load
         else
             error(['Error!']);
