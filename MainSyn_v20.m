@@ -28,6 +28,8 @@ addpath(genpath([RootPath,'/TestData_K']));
 addpath(genpath([RootPath,'/TestData_K_Simulation']));
 addpath(genpath([RootPath,'/TestData_TwoInverterCase']));
 
+stop
+
 %% Get color RGB
 ColorRGB();
 
