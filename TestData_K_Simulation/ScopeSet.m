@@ -3,7 +3,8 @@
 % ModelName = 'K_Sim';
 % ModelName = 'K_Sim_NoCap';
 % ModelName = 'K_Sim_Load';
-ModelName = 'K_Sim_SG_Load';
+% ModelName = 'K_Sim_SG_Load';
+ModelName = 'K_Sim_SG_Load_StabilityLimit';
 
 Fbus = [19,22,30,31,32,34,35,37,38,43,54,57,58,62,63,65,66];
 

@@ -6,6 +6,7 @@ clear('theta','theta_','theta__');
 
 Time = out.Data_App1{6}.Values.Time;
 TimeShift = 2;
+% TimeShift = 0;
 Time = Time - TimeShift;
 
 Fbus = [19,22,30,31,32,34,35,37,38,43,54,57,58,62,63,65,66];
@@ -66,7 +67,7 @@ for i = 1:NumBus
         subplot(2,1,1)
         plot(Time,dtheta{i}); hold on; grid on;
         xlim([0,1.5]);
-        ylim([-0.5,0.3]);
+        ylim([-0.6,0.3]);
         ylabel('Angle (rad)');
         % xlabel('Time (s)');
         subplot(2,1,2)
@@ -79,5 +80,5 @@ for i = 1:NumBus
 end
 
 if 0
-    print(gcf,['K_Sim_SG_Load_1d5s.png'],'-dpng','-r600');
+    print(gcf,['K_Sim_SG_Load_StabilityLimit_8s.png'],'-dpng','-r600');
 end

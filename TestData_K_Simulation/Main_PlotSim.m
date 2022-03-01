@@ -6,7 +6,7 @@ close all
 % DataName = '0SG_Load';
 % DataName = '0SG';
 % DataName = '2SG';
-DataName = '3SG';
+% DataName = '3SG';
 
 TimeShift = 2;
 Enable_SaveFigure = 1;
