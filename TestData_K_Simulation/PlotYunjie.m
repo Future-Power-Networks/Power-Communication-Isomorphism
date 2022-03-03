@@ -3,12 +3,8 @@ clear all
 clc
 close all
 
-% DataName = '0SG_Load';
-% DataName = '0SG';
-% DataName = '2SG';
-% DataName = '3SG';
-% DataName = 'SgLoad';
-DataName = '0SG_Load_LongerFault';
+% DataName = 'SingleIbrMode';
+DataName = 'InterAreaMode';
 
 TimeShift = 2;
 Enable_SaveFigure = 1;
@@ -21,15 +17,8 @@ Time = Time - TimeShift;
 
 Fbus = [19,22,30,31,32,34,35,37,38,43,54,57,58,62,63,65,66];
 
-
-NumRef = 17;
-NumBus = 68;
-
-if strcmp(DataName,'0SG_Load') || strcmp(DataName,'SgLoad') || strcmp(DataName,'0SG_Load_LongerFault')
-    NumRef = 1;
-    NumBus = 16;
-end
-
+NumRef = 1;
+NumBus = 16;
 
 for i = 1:NumBus
     if isempty(find(Fbus == i,1))
@@ -68,38 +57,31 @@ for i = 1:NumBus
 end
 
 figure(1)
+LineWidth = 1;
 set(gcf,'units','normalized','outerposition',FigSize);
 for i = 1:NumBus
     if isempty(find(Fbus == i,1))
         subplot(3,1,1)
-        plot(Time,w{i}(:,:,1)); hold on; grid on;
-        xlim([0,1.5]);
+        plot(Time,w{i}(:,:,1),'LineWidth',LineWidth); hold on; grid on;
+        xlim([0,10]);
         ylabel('Frequency (pu)')
-        xlabel('Time (s)')
+        % xlabel('Time (s)')
         subplot(3,1,2)
-        plot(Time,dtheta{i}*180/pi); hold on; grid on;
-        xlabel('Time (s)')
-        xlim([0,1.5]);
+        plot(Time,dtheta{i}*180/pi,'LineWidth',LineWidth); hold on; grid on;
+        % xlabel('Time (s)')
+        xlim([0,10]);
 %         ylim([0,1]);        % 0SG, 3SG, 0SG_Load
 %         ylim([-5,30]);     % 2SG
         ylabel('Angle (Degree)');
         subplot(3,1,3)
-        plot(Time,vm{i}); hold on; grid on;
-        xlim([0,1.5]);
-        if strcmp(DataName,'0SG')
-            ylim([0,4]);      % 0SG
-        elseif strcmp(DataName,'2SG')
-            ylim([0,8]);        % 2SG
-        elseif strcmp(DataName,'3SG') || strcmp(DataName,'0SG_Load') || strcmp(DataName,'SgLoad') || strcmp(DataName,'0SG_Load_LongerFault')
-            ylim([0,1.5]);        % 3SG, 0SG_Load
-        else
-            error(['Error!']);
-        end
+        plot(Time,vm{i},'LineWidth',LineWidth); hold on; grid on;
+        xlim([0,10]);
+        ylim([0,1.5]);        % 3SG, 0SG_Load
         ylabel('Voltage (pu)')
         xlabel('Time (s)')
     end
 end
 
 if Enable_SaveFigure
-    print(gcf,['K_Sim_' DataName '.png'],'-dpng','-r600');
+    print(gcf,['IbrCase_' DataName '.png'],'-dpng','-r600');
 end

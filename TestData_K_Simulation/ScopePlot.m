@@ -14,7 +14,7 @@ Fbus = [19,22,30,31,32,34,35,37,38,43,54,57,58,62,63,65,66];
 % NumRef = 17;
 % NumBus = 68;
 
-NumRef = 2;
+NumRef = 1;
 NumBus = 16;
 
 Enable_17InfBus = 0;
